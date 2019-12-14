@@ -16,13 +16,14 @@ use Mjml\Factory;
 use Mjml\Compiler;
 
 $mjml = '
-    <mjml>
-        <mj-body>
-            <mj-section>
-                <mj-raw><p>Hello world</p></mj-raw>
-            </mj-section>
-        </mj-body>
-    </mjml>';
+  <mjml>
+    <mj-body>
+      <mj-section>
+        <mj-raw><p>Hello world</p></mj-raw>
+      </mj-section>
+    </mj-body>
+  </mjml>
+';
 
 $factory = new Factory();
 $compiler = new Compiler($factory);
