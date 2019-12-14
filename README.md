@@ -10,6 +10,9 @@ A PHP API for MailJet's mjml transpiler.
 $ composer require bryonbean/mjml
 ```
 
+## Requirements
+* The `npm` executable must be available in PATH.
+
 ## Usage
 ```php
 use Mjml\Factory;

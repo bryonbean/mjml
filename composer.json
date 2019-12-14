@@ -3,6 +3,7 @@
     "description": "MJML Compiler for PHP",
     "type": "library",
     "require": {
+        "eloquent/composer-npm-bridge": "dev-master"
     },
     "autoload": {
         "psr-4": {
@@ -19,8 +20,10 @@
             "email": "bryon.bean@kitware.com"
         }
     ],
-    "scripts": {
-        "post-install-cmd": "npm install"
+    "extra": {
+        "npm-bridge": {
+            "optional": true
+        }
     },
     "minimum-stability": "dev"
 }
