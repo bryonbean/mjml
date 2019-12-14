@@ -1,0 +1,25 @@
+{
+  "name": "bryonbean-mjml",
+  "version": "0.0.1",
+  "description": "MJML Compiler for PHP",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bryonbean/mjml.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bryonbean/mjml/issues"
+  },
+  "homepage": "https://github.com/bryonbean/mjml#readme",
+  "dependencies": {
+    "mjml": "^4.5.1"
+  }
+}

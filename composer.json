@@ -1,0 +1,26 @@
+{
+    "name": "bryonbean/mjml",
+    "description": "MJML Compiler for PHP",
+    "type": "library",
+    "require": {
+    },
+    "autoload": {
+        "psr-4": {
+            "Mjml\\": "src/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bryon Bean",
+            "email": "bryon.bean@kitware.com"
+        }
+    ],
+    "scripts": {
+        "post-install-cmd": "npm install"
+    },
+    "minimum-stability": "dev"
+}
