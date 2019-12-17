@@ -1,7 +1,6 @@
 {
     "name": "bryonbean/mjml",
     "description": "MJML Compiler for PHP",
-    "type": "library",
     "require": {
         "eloquent/composer-npm-bridge": "dev-master"
     },
