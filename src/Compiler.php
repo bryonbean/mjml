@@ -29,11 +29,13 @@ class Compiler
    */
   public function compile(string $input, string $output_filepath): bool
   {
-    $exe = $this->factory->createCompiler();
+    $exe  = $this->factory->createCompiler();
+    $node = $this->factory->createNodeExe();
+
     $error = '';
 
-    if ($exe->isExecutable()) {
-      $cmd = "{$exe} -is";
+    if ($node->isExecutable() && $exe->isExecutable()) {
+      $cmd = "{$node} {$exe} -is";
       $spec = [
         0 => ['pipe', 'r'],
         1 => ['file', $output_filepath, 'w'],

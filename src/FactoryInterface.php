@@ -15,4 +15,11 @@ interface FactoryInterface
    * @return \Mjml\File
    */
   public function createCompiler(): File;
+
+  /**
+   * Returns a \Mjml\File instance that represents the node executable
+   *
+   * @return File
+   */
+  public function createNodeExe(): File;
 }

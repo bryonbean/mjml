@@ -12,6 +12,7 @@ $ composer require bryonbean/mjml
 
 ## Requirements
 * The `npm` executable must be available in PATH.
+* The node executable must be located at `/usr/local/bin/node`
 
 ## Usage
 ```php

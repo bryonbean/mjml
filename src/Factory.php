@@ -18,4 +18,12 @@ class Factory implements FactoryInterface
         $mjml_path = dirname(__DIR__) . '/node_modules/.bin/mjml';
         return new File($mjml_path);
     }
+
+  /**
+   * @inheritDoc
+   */
+    public function createNodeExe(): File
+    {
+      return new File('/usr/local/bin/node');
+    }
 }
