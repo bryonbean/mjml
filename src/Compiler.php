@@ -29,36 +29,36 @@ class Compiler
    */
   public function compile(string $input, string $output_filepath): bool
   {
-    $exe  = $this->factory->createCompiler();
     $node = $this->factory->createNodeExe();
-
+    $mjml  = $this->factory->createCompiler();
     $error = '';
 
-    if ($node->isExecutable() && $exe->isExecutable()) {
-      $cmd = "{$node} {$exe} -is";
+    if ($node->isExecutable() && $mjml->isExecutable()) {
+      $cmd = "{$node} {$mjml} -is";
       $spec = [
         0 => ['pipe', 'r'],
         1 => ['file', $output_filepath, 'w'],
         2 => ['pipe', 'w']
       ];
 
-      $mjml = proc_open($cmd, $spec, $pipes);
+      $handle = proc_open($cmd, $spec, $pipes);
 
-      if (is_resource($mjml)) {
+      if (is_resource($handle)) {
         fwrite($pipes[0], $input, strlen($input));
         fclose($pipes[0]);
 
         $error = stream_get_contents($pipes[2]);
         fclose($pipes[2]);
 
-        if (proc_close($mjml) !== 0) {
+        if (proc_close($handle) !== 0) {
           $error = "Non-zero exit status: {$error}";
         }
       } else {
         $error = 'Opening process did not return expected resource';
       }
     } else {
-      $error = "{$exe} not executable";
+      $exe = $node->isExecutable() ? $mjml->__toString() : $node->__toString();
+      $error = basename($exe) . ' not executable';
     }
 
     if ($error) {
