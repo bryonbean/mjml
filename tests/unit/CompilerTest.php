@@ -5,8 +5,9 @@ namespace Mjml;
 
 use PHPUnit\Framework\TestCase;
 
-function proc_open ($cmd, array $descriptorspec, ?array &$pipes = [], $cwd = null, array $env = null, array $other_options = null) {
-  foreach ($descriptorspec as $idx => $spec ) {
+function proc_open($cmd, array $descriptorspec, ?array &$pipes = [], $cwd = null, array $env = null, array $other_options = null)
+{
+  foreach ($descriptorspec as $idx => $spec) {
     $io = new \stdClass();
     if ($spec[0] === 'file') {
       list($io->type, $io->file, $io->mode) = $spec;
@@ -19,32 +20,38 @@ function proc_open ($cmd, array $descriptorspec, ?array &$pipes = [], $cwd = nul
   return CompilerTest::getReturn(__FUNCTION__);
 }
 
-function fwrite ($handle, $string, $length = null) {
+function fwrite($handle, $string, $length = null)
+{
   CompilerTest::setReceived(__FUNCTION__, func_get_args());
   return CompilerTest::getReturn(__FUNCTION__);
 }
 
-function fclose ($handle) {
+function fclose($handle)
+{
   CompilerTest::setReceived(__FUNCTION__, func_get_args());
   return CompilerTest::getReturn(__FUNCTION__);
 }
 
-function is_resource ($var) {
+function is_resource($var)
+{
   CompilerTest::setReceived(__FUNCTION__, func_get_args());
   return CompilerTest::getReturn(__FUNCTION__);
 }
 
-function strlen ($string) {
+function strlen($string)
+{
   CompilerTest::setReceived(__FUNCTION__, func_get_args());
   return \strlen($string);
 }
 
-function stream_get_contents ($handle, $maxlength = null, $offset = null) {
+function stream_get_contents($handle, $maxlength = null, $offset = null)
+{
   CompilerTest::setReceived(__FUNCTION__, func_get_args());
   return CompilerTest::getReturn(__FUNCTION__);
 }
 
-function proc_close ($process) {
+function proc_close($process)
+{
   CompilerTest::setReceived(__FUNCTION__, func_get_args());
   return CompilerTest::getReturn(__FUNCTION__);
 }
@@ -66,7 +73,7 @@ class CompilerTest extends TestCase
     $this->runCompile();
 
     $expected = [
-      '/path/to/mjml -is',
+      '/path/to/bin/node /path/to/local/mjml -is',
       [
         ['pipe', 'r'],
         ['file', '/some/file/location/template.ctp', 'w'],
@@ -75,7 +82,7 @@ class CompilerTest extends TestCase
       [
         (object)['type' => 'pipe', 'mode' => 'r'],
         (object)['type' => 'file', 'file' => '/some/file/location/template.ctp', 'mode' => 'w'],
-        (object)['type' => 'pipe' , 'mode' => 'w'],
+        (object)['type' => 'pipe', 'mode' => 'w'],
       ],
     ];
     $actual = $this->getReceived('proc_open');
@@ -85,13 +92,12 @@ class CompilerTest extends TestCase
   public function testIsResourceInput()
   {
     $this->runCompile();
-
     $expected = [(object)['resource' => 'mjml']];
     $actual = $this->getReceived('is_resource');
     $this->assertEquals($expected, $actual);
   }
 
-  public  function testFwriteInput()
+  public function testFwriteInput()
   {
     $this->runCompile();
     $input = '<mjml>Hello world!</mjml>';
@@ -113,7 +119,7 @@ class CompilerTest extends TestCase
     $actual = $this->getReceived('fclose');
     $this->assertEquals($expected, $actual);
 
-    $expected = [(object) ['type' => 'pipe', 'mode' => 'w']];
+    $expected = [(object)['type' => 'pipe', 'mode' => 'w']];
     $actual = $this->getReceived('fclose');
     $this->assertEquals($expected, $actual);
   }
@@ -134,20 +140,12 @@ class CompilerTest extends TestCase
     $this->assertEquals($expected, $actual);
   }
 
-  public function testCompileGivenCompilerNotExecutable()
-  {
-    $this->expectException(CompileException::class);
-    $this->expectExceptionMessage('/path/to/mjml not executable');
-
-    $this->runCompile(null, false);
-  }
-
   public function testCompileGivenProcOpenDoesNotReturnResource()
   {
     $this->expectException(CompileException::class);
     $this->expectExceptionMessage('Opening process did not return expected resource');
 
-    $this->runCompile(null, true, false);
+    $this->runCompile(null, true, true, false);
   }
 
   public function testCompileGivenExecutableExitsWithNonZero()
@@ -158,6 +156,24 @@ class CompilerTest extends TestCase
     $this->runCompile($error);
   }
 
+  public function testCompileGivenNodeExeNotExecutable()
+  {
+    $this->expectException(CompileException::class);
+    $this->expectExceptionMessage("node not executable");
+    $this->runCompile(null, false);
+  }
+
+  public function testCompileGivenMjmlExeNotExecutable()
+  {
+    $this->expectException(CompileException::class);
+    $this->expectExceptionMessage("mjml not executable");
+    $this->runCompile(null, true, false);
+  }
+
+  /**
+   * @param string $fn
+   * @param array $arguments
+   */
   public static function setReceived(string $fn, array $arguments)
   {
     $fn = self::getFnBasename($fn);
@@ -167,6 +183,10 @@ class CompilerTest extends TestCase
     static::$received[$fn][] = $arguments;
   }
 
+  /**
+   * @param string $fn
+   * @return array
+   */
   public function getReceived(string $fn): array
   {
     if (isset(self::$received[$fn])) {
@@ -175,6 +195,10 @@ class CompilerTest extends TestCase
     return [];
   }
 
+  /**
+   * @param string $fn
+   * @return mixed|null
+   */
   public static function getReturn(string $fn)
   {
     $fn = self::getFnBasename($fn);
@@ -186,6 +210,10 @@ class CompilerTest extends TestCase
     }
   }
 
+  /**
+   * @param string $fn
+   * @param $value
+   */
   public function setReturn(string $fn, $value)
   {
     if (!isset(static::$returned[$fn])) {
@@ -194,32 +222,36 @@ class CompilerTest extends TestCase
     static::$returned[$fn][] = $value;
   }
 
+  /**
+   * @param string $fn
+   * @return string
+   */
   private static function getFnBasename(string $fn): string
   {
     return substr(strrchr($fn, '\\'), 1);
   }
 
-    /**
-     * @param string|null $error
-     * @param bool $isExe
-     * @param bool $isRes
-     * @throws CompileException
-     */
-  private function runCompile(string $error = null, bool $isExe = true, bool $isRes = true): void
+  /**
+   * @param string|null $error
+   * @param bool $nodeExe
+   * @param bool $mjmlExe
+   * @param bool $isRes
+   */
+  private function runCompile(string $error = null,
+                              bool $nodeExe = true,
+                              bool $mjmlExe = true,
+                              bool $isRes = true): void
   {
-    $mock_exe = $this->createMock(File::class);
-    $mock_exe->expects($this->once())
-      ->method('isExecutable')
-      ->willReturn($isExe);
-
-    $mock_exe->expects($this->once())
-      ->method('__toString')
-      ->willReturn('/path/to/mjml');
+    $mock_node = $this->createMockExecutable('/path/to/bin/node', $nodeExe);
+    $mock_mjml = $this->createMockExecutable('/path/to/local/mjml', $mjmlExe);
 
     $mock_factory = $this->createMock(FactoryInterface::class);
     $mock_factory->expects($this->once())
+      ->method('createNodeExe')
+      ->willReturn($mock_node);
+    $mock_factory->expects($this->once())
       ->method('createCompiler')
-      ->willReturn($mock_exe);
+      ->willReturn($mock_mjml);
 
     $mjml = (object)['resource' => 'mjml'];
 
@@ -237,6 +269,23 @@ class CompilerTest extends TestCase
     $sut = new Compiler($mock_factory);
     $actual = $sut->compile($input, '/some/file/location/template.ctp');
     $this->assertTrue($actual);
+  }
+
+  /**
+   * @param string $path
+   * @param bool $isExe
+   * @return File
+   */
+  private function createMockExecutable(string $path, bool $isExe): File
+  {
+    $mock_exe = $this->createMock(File::class);
+    $mock_exe->expects($this->any())
+      ->method('isExecutable')
+      ->willReturn($isExe);
+    $mock_exe->expects($this->any())
+      ->method('__toString')
+      ->willReturn($path);
+    return $mock_exe;
   }
 
 }
