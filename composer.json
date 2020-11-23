@@ -1,8 +1,9 @@
 {
     "name": "bryonbean/mjml",
     "description": "MJML Compiler for PHP",
+    "version": "1.0.0",
     "require": {
-        "eloquent/composer-npm-bridge": "dev-master"
+        "eloquent/composer-npm-bridge": "^5"
     },
     "autoload": {
         "psr-4": {
